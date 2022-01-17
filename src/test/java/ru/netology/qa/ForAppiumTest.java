@@ -4,18 +4,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
-import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
+import ru.netology.qa.screens.ForAppiumMainScreen;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 public class ForAppiumTest {
 
@@ -38,34 +41,34 @@ public class ForAppiumTest {
     }
 
     @Test
+    @Order(2)
     public void inputSpace() {
-        MobileElement textBefore = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/textToBeChanged");
-        MobileElement el1 = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/userInput");
-        el1.sendKeys(" ");
-        MobileElement el2 = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/buttonChange");
-        el2.click();
-        MobileElement textAfter = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/textToBeChanged");
+        ForAppiumMainScreen main = new ForAppiumMainScreen(driver);
+        String textBefore = main.textBefore.getText();
+        main.input.sendKeys(" ");
+        main.buttonChange.click();
+        String textAfter = main.textBefore.getText();
         assertEquals(textBefore, textAfter);
     }
 
     @Test
+    @Order(1)
     public void inputNothing() {
-        MobileElement textBefore = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/textToBeChanged");
-        MobileElement el2 = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/buttonChange");
-        el2.click();
-        MobileElement textAfter = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/textToBeChanged");
+        ForAppiumMainScreen main = new ForAppiumMainScreen(driver);
+        String textBefore = main.textBefore.getText();
+        main.buttonChange.click();
+        String textAfter = main.textBefore.getText();
         assertEquals(textBefore, textAfter);
     }
 
     @Test
+    @Order(3)
     public void newActivity() {
-        MobileElement el1 = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/userInput");
-        el1.sendKeys("Hallo");
-        MobileElement el2 = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/buttonActivity");
-        el2.click();
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        MobileElement textAfter = (MobileElement) driver.findElementById("ru.netology.testing.uiautomator:id/text");
-        assertEquals("Hallo", textAfter.getText());
+        ForAppiumMainScreen main = new ForAppiumMainScreen(driver);
+        main.input.sendKeys("Hallo");
+        main.buttonActivity.click();
+        String textAfter = main.activityText.getText();
+        assertEquals("Hallo", textAfter);
     }
 
     @AfterAll
